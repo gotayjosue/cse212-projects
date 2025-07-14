@@ -3,7 +3,8 @@
 /// added and allows customers to be serviced.
 /// </summary>
 public class CustomerService {
-    public static void Run() {
+    public static void Run()
+    {
         // Example code to see what's in the customer service queue:
         // var cs = new CustomerService(10);
         // Console.WriteLine(cs);
@@ -11,24 +12,57 @@ public class CustomerService {
         // Test Cases
 
         // Test 1
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: The AddNewCustumer method is adding the data to the queue correctly
+        // Expected Result: [size=1 max_size=10 => Josue (1515) : Broke Phone]
         Console.WriteLine("Test 1");
+        var cs = new CustomerService(10);
+        cs.AddNewCustomer();
+        Console.WriteLine(cs);
+
+
 
         // Defect(s) Found: 
 
         Console.WriteLine("=================");
 
         // Test 2
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: Trying to add another customer. 
+        // Expected Result: Maximum Number of Customers in Queue.
         Console.WriteLine("Test 2");
-
-        // Defect(s) Found: 
-
+        var test2 = new CustomerService(5);
+        test2.AddCustomerForTesting("Karla", "2005", "Broke Phone");
+        test2.AddCustomerForTesting("Luis", "2020", "Forgot password");
+        test2.AddCustomerForTesting("Ana", "2099", "Screen cracked");
+        test2.AddCustomerForTesting("Juan", "2094", "Broke Keyboard");
+        test2.AddCustomerForTesting("Ana", "2016", "Mouse click");
+        test2.AddNewCustomer();
+        // Defect(s) Found: The AddNewCustomer method doesn't add multiple customers. A function that does it was added.
+        // The max size condition inside the AddNewCustomer method was wrong, and it was change from: _queue.Count > _maxSize to: _queue.Count >= _maxSize 
         Console.WriteLine("=================");
 
         // Add more Test Cases As Needed Below
+
+        // Test 3
+        // Scenario: Trying to remove a customer from the queue. 
+        // Expected Result: Ana (2099)  : Screen cracked
+        Console.WriteLine("Test 3");
+
+        test2.ServeCustomer();
+
+        // Defect(s) Found: The parameter of the RemoveAt method was "0", and it was changed to "1"
+        //to be able to erase the first index
+
+        Console.WriteLine("=================");
+
+        // Test 4
+        // Scenario: Trying to remove a customer from an empty queue. 
+        // Expected Result: The queue is empty. There is nothing to erase
+        Console.WriteLine("Test 4");
+
+        var test4 = new CustomerService(5);
+        test4.ServeCustomer();
+
+        // Defect(s) Found:
     }
 
     private readonly List<Customer> _queue = new();
@@ -65,9 +99,23 @@ public class CustomerService {
     /// Prompt the user for the customer and problem information.  Put the 
     /// new record into the queue.
     /// </summary>
-    private void AddNewCustomer() {
+
+    /// The function below is just to test if the size condition of the queue is working
+    public void AddCustomerForTesting(string name, string accountId, string problem) {
+        if (_queue.Count >= _maxSize) {
+            Console.WriteLine("Queue is full.");
+            return;
+        }
+
+        var customer = new Customer(name, accountId, problem);
+        _queue.Add(customer);
+    }
+    
+    private void AddNewCustomer()
+    {
         // Verify there is room in the service queue
-        if (_queue.Count > _maxSize) {
+        if (_queue.Count >= _maxSize)
+        {
             Console.WriteLine("Maximum Number of Customers in Queue.");
             return;
         }
@@ -88,9 +136,14 @@ public class CustomerService {
     /// Dequeue the next customer and display the information.
     /// </summary>
     private void ServeCustomer() {
-        _queue.RemoveAt(0);
-        var customer = _queue[0];
-        Console.WriteLine(customer);
+        if (_queue.Count <= 0)
+        {
+            Console.WriteLine("The queue is empty. There is nothing to erase");
+        } else {
+            _queue.RemoveAt(1);
+            var customer = _queue[1];
+            Console.WriteLine(customer);
+        }
     }
 
     /// <summary>
