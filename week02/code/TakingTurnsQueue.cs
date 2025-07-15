@@ -41,10 +41,24 @@ public class TakingTurnsQueue
         {
             Person person = _people.Dequeue();
             if (person.Turns > 1)
+            //If a person start with more than 1 turn, the program will substract 1 to the person's turns
+            // and added that person to the queue again 
             {
                 person.Turns -= 1;
                 _people.Enqueue(person);
             }
+            else if (person.Turns == 1)
+            // If person only have 1 turn the program will substract 1 turn and it isn't going to add that person again
+            {
+                person.Turns -= 1;
+            }
+            else if (person.Turns <= 0)
+            // If a person have zero turns or less the program will add that person infinitely.
+            {
+                _people.Enqueue(person);
+            }
+            // These three conditions work to recognize the initial value of every person turns 
+            // and dequeue or enqueue as necessary. 
 
             return person;
         }
