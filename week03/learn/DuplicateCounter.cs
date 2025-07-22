@@ -1,4 +1,6 @@
-﻿public class DuplicateCounter
+﻿using System.Threading.Tasks.Dataflow;
+
+public class DuplicateCounter
 {
     //Count how many duplicates are in a collection of data.
 
@@ -25,6 +27,28 @@
     private static int CountDuplicates(int[] data)
     {
         // Add code here.
-        return 0;
+        int duplicates = 0;
+        var counts = new Dictionary<int, int>();
+
+        foreach (var number in data)
+        {
+            if (counts.ContainsKey(number))
+            {
+                counts[number]++;
+            }
+            else
+            {
+                counts[number] = 1;
+            }
+        }
+
+        foreach (var count in counts.Values)
+        {
+            if (count > 1)
+            {
+                duplicates++;
+            }
+        }
+        return duplicates;
     }
 }
