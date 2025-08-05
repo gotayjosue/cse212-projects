@@ -128,7 +128,7 @@ public static class Recursion
         // TODO Start Problem 3
         if (remember == null)
             remember = new Dictionary<int, decimal>();
-            
+
         if (remember!.ContainsKey(s))
         {
             return remember[s];
@@ -162,14 +162,14 @@ public static class Recursion
             results.Add(pattern);
             return;
         }
-    
+
         int i = pattern.IndexOf("*");
         string pattern0 = pattern.Substring(0, i) + "0" + pattern.Substring(i + 1);
         string pattern1 = pattern.Substring(0, i) + "1" + pattern.Substring(i + 1);
 
         WildcardBinary(pattern0, results);
         WildcardBinary(pattern1, results);
-        
+
     }
 
     /// <summary>
@@ -180,15 +180,37 @@ public static class Recursion
     {
         // If this is the first time running the function, then we need
         // to initialize the currPath list.
-        if (currPath == null) {
+
+        if (currPath == null)
+        {
             currPath = new List<ValueTuple<int, int>>();
         }
-        
+
         // currPath.Add((1,2)); // Use this syntax to add to the current path
 
         // TODO Start Problem 5
         // ADD CODE HERE
 
+        //Check if the move is valid before do it
+        if (!maze.IsValidMove(currPath, x, y))
+            return;
+
+        currPath.Add((x, y));
+
+        if (maze.IsEnd(x, y))
+        {
+            results.Add(currPath.AsString());
+        }
+
+        SolveMaze(results, maze, x, y - 1, currPath);//up
+        SolveMaze(results, maze, x - 1, y, currPath);//dow
+        SolveMaze(results, maze, x + 1, y, currPath);//right
+        SolveMaze(results, maze, x, y + 1, currPath);//left
+
+        currPath.RemoveAt(currPath.Count - 1);
+        
         // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
     }
+
+
 }
